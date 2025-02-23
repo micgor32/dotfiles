@@ -39,15 +39,13 @@ tasks:
       - task: copy_conf
         vars:
           DIR: .config/waybar
-      - task: cp -R .tmux/ $HOME
-      - task: cp .zshrc $HOME
+      - cp -R .tmux/ $HOME
+      - cp .zshrc $HOME
 
   copy_conf:
     internal: true
-    env:
-      HOME_DIR: $HOME
     cmds:
-      - cp -R {{.DIR}} {{.HOME_DIR}}/.config/
+      - cp -R {{.DIR}} $HOME/.config/
 
   install_omz:
     desc: "Install oh-my-zsh"
@@ -61,8 +59,8 @@ tasks:
     preconditions:
       - test -d $HOME/.oh-my-zsh/ 
     cmds:
-      - task: git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-      - task: git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.oh-my-zsh/custom/plugins/zsh-vi-mode
+      - git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+      - git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.oh-my-zsh/custom/plugins/zsh-vi-mode
 
   chsh_zsh:
     desc: "Change default shell to zsh"
