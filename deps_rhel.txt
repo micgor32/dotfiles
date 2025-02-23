@@ -5,3 +5,9 @@ waybar
 git
 clang
 curl
+alacritty
+fuzzel
+tmux
+ripgrep
+btop
+gnome-keyring

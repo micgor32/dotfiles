@@ -41,6 +41,7 @@ tasks:
           DIR: .config/waybar
       - cp -R .tmux/ $HOME
       - cp .zshrc $HOME
+      - cp .tmux.conf $HOME
 
   copy_conf:
     internal: true
