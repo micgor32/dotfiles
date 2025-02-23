@@ -1,0 +1,70 @@
+---
+version: '3'
+
+tasks:
+  rhel:
+    desc: "Do the whole config for RHEL based OSes"
+    cmds:
+      - task: deps_rhel
+      - task: prepare-config
+      - task: install_omz
+      - task: install_zsh_plugins
+      - task: chsh_zsh
+
+  deps_rhel:
+    desc: "Installing deps using dnf"
+    preconditions:
+      - test -f /usr/bin/dnf
+    cmds:
+      - sudo dnf install -y $(cat deps_rhel.txt) 
+
+  deps_arch:
+    desc: "Installing deps using pacman"
+    preconditions:
+      - test -f /usr/bin/pacman
+    cmds:
+      - sudo pacman -Ssy $(cat deps_arch.txt)
+
+  prepare-config:
+    desc: "Copy config for nvim and sway"
+    preconditions:
+      - test -d .config/
+    cmds:
+      - task: copy_conf
+        vars:
+          DIR: .config/nvim
+      - task: copy_conf
+        vars:
+          DIR: .config/sway
+      - task: copy_conf
+        vars:
+          DIR: .config/waybar
+      - task: cp -R .tmux/ $HOME
+      - task: cp .zshrc $HOME
+
+  copy_conf:
+    internal: true
+    env:
+      HOME_DIR: $HOME
+    cmds:
+      - cp -R {{.DIR}} {{.HOME_DIR}}/.config/
+
+  install_omz:
+    desc: "Install oh-my-zsh"
+    preconditions:
+      - test -f /usr/bin/zsh
+    cmds:
+      - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+  install_zsh_plugins:
+    desc: "Install essential zsh plugins"
+    preconditions:
+      - test -d $HOME/.oh-my-zsh/ 
+    cmds:
+      - task: git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+      - task: git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.oh-my-zsh/custom/plugins/zsh-vi-mode
+
+  chsh_zsh:
+    desc: "Change default shell to zsh"
+    cmds:
+      - chsh -s $(which zsh) $USER

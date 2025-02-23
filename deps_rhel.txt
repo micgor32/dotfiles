@@ -1,0 +1,7 @@
+nvim
+zsh
+sway
+waybar
+git
+clang
+curl
